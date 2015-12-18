@@ -35,6 +35,6 @@
     "diagram-js": "^0.12.0",
     "jquery": "^2.1.1",
     "lodash": "^3.0.0",
-    "camunda-modeler-resource-deployer": "polenz/resource-deployer-example"
+    "camunda-modeler-resource-deployer": "polenz/camunda-modeler-resource-deployer"
   }
 }

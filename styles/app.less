@@ -92,7 +92,7 @@ a:link {
     display: inline-block;
     margin-right: 10px;
 
-    > a {
+    > a, button {
       background: #DDD;
       border: solid 1px #666;
       display: inline-block;
@@ -100,11 +100,11 @@ a:link {
     }
   }
 
-  a {
+  a, button {
     opacity: 0.3;
   }
 
-  a.active {
+  a.active, button.active {
     opacity: 1.0;
   }
 }
@@ -127,4 +127,22 @@ a:link {
   }
 }
 
+#js-resource-deployer {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  width: 500px;
+  height: 500px;
+  background: #ddd;
+  border: #666;
+  padding: 20px;
+  display: none;
+}
+
+#js-resource-deployer.active {
+  display: block;
+  z-index: 999;
+}
+
 @import "bpmn-js-properties-panel/styles/properties";
+@import "camunda-modeler-resource-deployer/styles/styles";

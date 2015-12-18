@@ -6,7 +6,7 @@ var $ = require('jquery'),
     BpmnModeler = require('bpmn-js/lib/Modeler');
 
 var propertiesPanelModule = require('bpmn-js-properties-panel'),
-    resourceDeployerModule = require('camunda-modeler-resource-deployer'),
+    resourceDeployer = require('camunda-modeler-resource-deployer'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdleDescriptor = require('camunda-bpmn-moddle/resources/camunda');
 
@@ -14,18 +14,16 @@ var container = $('#js-drop-zone');
 
 var canvas = $('#js-canvas');
 
+var deployer = null;
+
 var bpmnModeler = new BpmnModeler({
   container: canvas,
   propertiesPanel: {
     parent: '#js-properties-panel'
   },
-  resourceDeployer: {
-    parent: '#js-resource-deployer'
-  }
   additionalModules: [
     propertiesPanelModule,
-    propertiesProviderModule,
-    resourceDeployerModule
+    propertiesProviderModule
   ],
   moddleExtensions: {
     camunda: camundaModdleDescriptor
@@ -129,13 +127,41 @@ $(document).on('ready', function() {
 
   var downloadLink = $('#js-download-diagram');
   var downloadSvgLink = $('#js-download-svg');
+  var deployLink = $('#js-deploy-resource');
 
-  $('.buttons a').click(function(e) {
+  $('.buttons a, .buttons button').click(function(e) {
     if (!$(this).is('.active')) {
       e.preventDefault();
       e.stopPropagation();
     }
   });
+
+  deployLink.click(function(e) {
+    if(deployer) {
+      return;
+    }
+
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = 'X';
+    closeBtn.addEventListener('click', function() {
+      $('#js-resource-deployer').toggleClass('active', false);
+      deployer.close();
+      deployer = null;
+    });
+
+    $('#js-resource-deployer').append(closeBtn);
+
+    deployer = new resourceDeployer({
+      container: $('#js-resource-deployer')[0],
+      resourceProvider: function(done) {
+        bpmnModeler.saveXML(done);
+      }
+    });
+
+    $('#js-resource-deployer').toggleClass('active');
+
+  });
+
 
   function setEncoded(link, name, data) {
     var encodedData = encodeURIComponent(data);
@@ -161,6 +187,8 @@ $(document).on('ready', function() {
     saveDiagram(function(err, xml) {
       setEncoded(downloadLink, 'diagram.bpmn', err ? null : xml);
     });
+
+    deployLink.addClass('active');
   }, 500);
 
   bpmnModeler.on('commandStack.changed', exportArtifacts);
