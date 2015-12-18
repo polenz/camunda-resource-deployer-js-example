@@ -1,11 +1,11 @@
 {
-  "name": "resource-deployer-example",
+  "name": "camunda-resource-deployer-js-bpmn",
   "version": "0.0.0",
   "description": "A bpmn-js modeler + properties panel + resource deployer example",
   "main": "app/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/polenz/resource-deployer-example"
+    "url": "https://github.com/polenz/camunda-resource-deployer-js-example"
   },
   "keywords": [
     "resource-deployer-example"
@@ -35,6 +35,6 @@
     "diagram-js": "^0.12.0",
     "jquery": "^2.1.1",
     "lodash": "^3.0.0",
-    "camunda-modeler-resource-deployer": "polenz/camunda-modeler-resource-deployer"
+    "camunda-resource-deployer-js": "polenz/camunda-resource-deployer-js"
   }
 }

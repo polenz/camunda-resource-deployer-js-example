@@ -118,7 +118,7 @@ module.exports = function(grunt) {
         files: [
           'styles/**/*.less',
           'node_modules/bpmn-js-properties-panel/styles/**/*.less',
-          'node_modules/camunda-modeler-resource-deployer/styles/**/*.less'
+          'node_modules/camunda-resource-deployer-js/styles/**/*.less'
         ],
         tasks: [
           'less'

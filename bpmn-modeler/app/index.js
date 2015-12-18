@@ -6,7 +6,7 @@ var $ = require('jquery'),
     BpmnModeler = require('bpmn-js/lib/Modeler');
 
 var propertiesPanelModule = require('bpmn-js-properties-panel'),
-    resourceDeployer = require('camunda-modeler-resource-deployer'),
+    resourceDeployer = require('camunda-resource-deployer-js'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdleDescriptor = require('camunda-bpmn-moddle/resources/camunda');
 
@@ -151,7 +151,17 @@ $(document).on('ready', function() {
 
     $('#js-resource-deployer').append(closeBtn);
 
+    var filename = bpmnModeler.get('canvas').getRootElement().businessObject.name;
+    if(filename) {
+      filename += '.bpmn';
+    }
+    else {
+      filename = 'process.bpmn';
+    }
+
     deployer = new resourceDeployer({
+      apiUrl: 'http://localhost:8080/engine-rest',
+      filename: filename,
       container: $('#js-resource-deployer')[0],
       resourceProvider: function(done) {
         bpmnModeler.saveXML(done);
