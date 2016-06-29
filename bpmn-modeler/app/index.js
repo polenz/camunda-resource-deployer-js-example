@@ -4,7 +4,8 @@ var $ = require('jquery'),
     BpmnModeler = require('bpmn-js/lib/Modeler');
 
 var propertiesPanelModule = require('bpmn-js-properties-panel'),
-    resourceDeployer = require('camunda-resource-deployer-js'),
+    resourceDeployer = require('camunda-resource-deployer-js/lib/ResourceDeployer'),
+    resourceValidator = require('camunda-resource-deployer-js/lib/ResourceValidator'),
     propertiesProviderModule = require('bpmn-js-properties-panel/lib/provider/camunda'),
     camundaModdleDescriptor = require('camunda-bpmn-moddle/resources/camunda');
 
@@ -13,6 +14,7 @@ var container = $('#js-drop-zone');
 var canvas = $('#js-canvas');
 
 var deployer = null;
+var validator = null;
 
 var bpmnModeler = new BpmnModeler({
   container: canvas,
@@ -126,6 +128,7 @@ $(document).on('ready', function() {
   var downloadLink = $('#js-download-diagram');
   var downloadSvgLink = $('#js-download-svg');
   var deployLink = $('#js-deploy-resource');
+  var validateLink = $('#js-validate-resource');
 
   $('.buttons a, .buttons button').click(function(e) {
     if (!$(this).is('.active')) {
@@ -140,6 +143,7 @@ $(document).on('ready', function() {
     }
 
     var closeBtn = document.createElement('button');
+    closeBtn.setAttribute('id', 'close');
     closeBtn.textContent = 'X';
     closeBtn.addEventListener('click', function() {
       $('#js-resource-deployer').toggleClass('active', false);
@@ -170,6 +174,34 @@ $(document).on('ready', function() {
 
   });
 
+  validateLink.click(function(e) {
+    if(validator) {
+      return;
+    }
+
+    var closeBtn = document.createElement('button');
+    closeBtn.setAttribute('id', 'close');
+    closeBtn.textContent = 'X';
+    closeBtn.addEventListener('click', function() {
+      $('#js-resource-validator').toggleClass('active', false);
+      validator.close();
+      validator = null;
+    });
+
+    $('#js-resource-validator').append(closeBtn);
+
+    validator = new resourceValidator({
+      apiUrl: 'http://localhost:8080/engine-rest',
+      container: $('#js-resource-validator')[0],
+      resourceProvider: function(done) {
+        bpmnModeler.saveXML(done);
+      }
+    });
+
+    $('#js-resource-validator').toggleClass('active');
+
+  });
+
 
   function setEncoded(link, name, data) {
     var encodedData = encodeURIComponent(data);
@@ -197,6 +229,8 @@ $(document).on('ready', function() {
     });
 
     deployLink.addClass('active');
+
+    validateLink.addClass('active');
   }, 500);
 
   bpmnModeler.on('commandStack.changed', exportArtifacts);
